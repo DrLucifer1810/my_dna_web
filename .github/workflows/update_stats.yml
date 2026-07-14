@@ -21,24 +21,23 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Fetch Data from Webhook
+      - name: Build Static Stats Data (Sharding)
         env:
           WEBHOOK_URL: ${{ secrets.MYDNA_GLOBAL_STATS_WEBHOOK }}
         run: |
-          mkdir -p public
           if [ -z "$WEBHOOK_URL" ]; then
             echo "Error: MYDNA_GLOBAL_STATS_WEBHOOK secret is not set."
             exit 1
           fi
-          echo "Fetching latest stats..."
-          curl -s -L "$WEBHOOK_URL" -o public/global_stats.json
-          echo "Data fetched successfully."
+          echo "Building shards..."
+          node scripts/build_stats.js
+          echo "Build finished successfully."
 
       - name: Commit and Push Changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git add public/global_stats.json
+          git add public/
           
           # Only commit if there are changes
           if git diff --staged --quiet; then
