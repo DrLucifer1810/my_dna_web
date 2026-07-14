@@ -4,111 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyDNA Global Network | Live Stats</title>
-    <meta name="description" content="MyDNA Global Network Decentralized Leaderboard and Live Stats">
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="glow-bg"></div>
-    <div class="glow-bg glow-bg-alt"></div>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-group">
+                <div class="logo-icon pulse"></div>
+                <h1>MyDNA <span class="accent-text">Network</span></h1>
+            </div>
+            <div class="header-stats">
+                <div class="stat-badge">
+                    <span class="label">Total Nodes</span>
+                    <span class="value accent-text" id="totalNodesCount">0</span>
+                </div>
+                <div class="stat-badge">
+                    <span class="label">Last Sync</span>
+                    <span class="value" id="lastSyncTime">--:--</span>
+                </div>
+            </div>
+        </header>
 
-    <header class="glass-header">
-        <div class="logo">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 17L12 22L22 17" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M2 12L12 17L22 12" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <h1>MyDNA <span>Network</span></h1>
+        <main class="dashboard-grid">
+            <!-- Sidebar: Top Skills -->
+            <aside class="sidebar">
+                <div class="panel">
+                    <h2>Global Top Skills</h2>
+                    <p class="subtitle">Most requested & possessed</p>
+                    <div class="skills-ranking" id="skillsRankingContainer">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content: Leaderboard -->
+            <section class="main-content">
+                <!-- Filters -->
+                <div class="filter-bar">
+                    <input type="text" id="searchInput" placeholder="Search by public key or skill..." class="search-input">
+                    <div class="filter-group">
+                        <select id="intentFilter" class="filter-select">
+                            <option value="all">All Intents</option>
+                            <option value="Ứng viên">Candidates</option>
+                            <option value="Nhà tuyển dụng">Employers</option>
+                            <option value="Freelancer">Freelancers</option>
+                        </select>
+                        <select id="workModelFilter" class="filter-select">
+                            <option value="all">All Models</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="On-site">On-site</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- List -->
+                <div class="nodes-list" id="nodesListContainer">
+                    <div class="loading-pulse">Loading Network Data...</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Profile Detail Modal -->
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModalBtn">&times;</button>
+            
+            <div class="modal-header">
+                <div class="modal-avatar" id="modalAvatar"></div>
+                <div class="modal-title">
+                    <h2 id="modalPublicKey">PublicKey</h2>
+                    <span class="badge" id="modalIntent">Intent</span>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="info-group">
+                    <span class="info-label">Seniority</span>
+                    <span class="info-value" id="modalSeniority">Unknown</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Work Model</span>
+                    <span class="info-value" id="modalWorkModel">Remote</span>
+                </div>
+                <div class="info-group">
+                    <span class="info-label">Salary Expectation</span>
+                    <span class="info-value accent-text" id="modalSalary">Negotiable</span>
+                </div>
+                
+                <div class="skills-section">
+                    <h3>Technical Stack</h3>
+                    <div class="tags-container" id="modalSkills"></div>
+                </div>
+
+                <div class="skills-section">
+                    <h3>Domain Knowledge</h3>
+                    <div class="tags-container" id="modalDomain"></div>
+                </div>
+            </div>
         </div>
-        <nav>
-            <a href="#" class="active">Explorer</a>
-            <a href="#">About Protocol</a>
-            <button class="join-btn">Launch Desktop App</button>
-        </nav>
-    </header>
-
-    <main class="container">
-        <section class="hero-stats">
-            <div class="stat-card glass-card fade-in">
-                <h3>Total Network Nodes</h3>
-                <h2 id="stat-total-nodes">--</h2>
-                <div class="stat-sparkline success">+24 in last 24h</div>
-            </div>
-            <div class="stat-card glass-card fade-in" style="animation-delay: 0.1s">
-                <h3>Active Recruiters</h3>
-                <h2 id="stat-recruiters">--</h2>
-                <div class="stat-sparkline warning">High Demand</div>
-            </div>
-            <div class="stat-card glass-card fade-in" style="animation-delay: 0.2s">
-                <h3>Active Freelancers</h3>
-                <h2 id="stat-freelancers">--</h2>
-                <div class="stat-sparkline info">Growing fast</div>
-            </div>
-        </section>
-
-        <section class="filter-bar glass-card fade-in" style="animation-delay: 0.3s">
-            <div class="filter-group">
-                <label for="intent-filter">Intent</label>
-                <select id="intent-filter">
-                    <option value="All">All Intents</option>
-                    <option value="Ứng viên">Candidates</option>
-                    <option value="Nhà tuyển dụng">Recruiters</option>
-                    <option value="Freelancer">Freelancers</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="seniority-filter">Seniority</label>
-                <select id="seniority-filter">
-                    <option value="All">All Levels</option>
-                    <option value="Junior">Junior</option>
-                    <option value="Mid">Mid-Level</option>
-                    <option value="Senior">Senior</option>
-                    <option value="Lead">Lead</option>
-                </select>
-            </div>
-            <div class="filter-group search-group">
-                <input type="text" id="skill-search" placeholder="Search by Skills (e.g. Rust, React)">
-                <button id="search-btn">Filter</button>
-            </div>
-        </section>
-
-        <section class="leaderboard-section fade-in" style="animation-delay: 0.4s">
-            <div class="table-container glass-card">
-                <div class="table-header">
-                    <h2>Live Network Leaderboard <span class="pulse-indicator"></span></h2>
-                    <p id="last-updated">Last synced: Fetching...</p>
-                </div>
-                <table id="leaderboard-table">
-                    <thead>
-                        <tr>
-                            <th>Node ID (Public Key)</th>
-                            <th>Intent</th>
-                            <th>Seniority</th>
-                            <th>Top Skills</th>
-                            <th>Expected/Budget ($)</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-body">
-                        <!-- Rows injected by JS -->
-                    </tbody>
-                </table>
-                <div id="loading-spinner" class="spinner-container">
-                    <div class="spinner"></div>
-                </div>
-                <div id="no-results" class="no-results hidden">
-                    <p>No nodes found matching your filters.</p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>MyDNA Global Statistics. Powered by decentralized P2P telemetry and GitHub Actions.</p>
-    </footer>
+    </div>
 
     <script src="app.js"></script>
 </body>
