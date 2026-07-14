@@ -1,19 +1,19 @@
-name: Fetch Global Network Stats
+name: Update Global Stats
 
 on:
   schedule:
-    # Run every hour
-    - cron: '0 * * * *'
-  workflow_dispatch:
-    # Allow manual triggering
+    # Run every 2 hours
+    - cron: '0 */2 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+permissions:
+  contents: write
 
 jobs:
-  fetch-and-commit:
+  fetch_and_deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v3
 
       - name: Setup Node.js
@@ -21,16 +21,29 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Fetch Stats from Google Sheet (via GAS)
+      - name: Fetch Data from Webhook
         env:
-          # Thêm URL webhook Google Apps Script vào Github Secrets
-          GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
-        run: node scripts/fetch_stats.js
-
-      - name: Commit and push changes
+          WEBHOOK_URL: ${{ secrets.MYDNA_GLOBAL_STATS_WEBHOOK }}
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          mkdir -p public
+          if [ -z "$WEBHOOK_URL" ]; then
+            echo "Error: MYDNA_GLOBAL_STATS_WEBHOOK secret is not set."
+            exit 1
+          fi
+          echo "Fetching latest stats..."
+          curl -s -L "$WEBHOOK_URL" -o public/global_stats.json
+          echo "Data fetched successfully."
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add public/global_stats.json
-          # Commit only if there are changes
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(data): auto-update global_stats.json" && git push)
+          
+          # Only commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No new data to commit."
+          else
+            git commit -m "chore: auto-update global_stats.json [skip ci]"
+            git push
+          fi

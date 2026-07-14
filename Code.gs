@@ -25,15 +25,38 @@ function doPost(e) {
     const data = sheet.getDataRange().getValues();
     let rowIndex = -1;
     
-    // Find if node exists
-    for (let i = 1; i < data.length; i++) {
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+    const rowsToDelete = [];
+    
+    // Find if node exists AND identify expired rows
+    for (let i = data.length - 1; i >= 1; i--) {
+      // Clean up old rows (TTL 7 days)
+      const rowDateStr = data[i][6];
+      if (rowDateStr) {
+        const rowDate = new Date(rowDateStr);
+        if (rowDate < sevenDaysAgo) {
+          rowsToDelete.push(i + 1); // +1 because array is 0-indexed, sheet is 1-indexed
+          continue;
+        }
+      }
+
       if (data[i][0] === pubKey) {
         rowIndex = i + 1;
-        break;
       }
     }
     
-    const now = new Date().toISOString();
+    // Delete expired rows from bottom to top so indices don't shift incorrectly
+    for (let i = 0; i < rowsToDelete.length; i++) {
+      if(rowsToDelete[i] !== rowIndex) { // Don't delete if we are about to update it anyway
+        sheet.deleteRow(rowsToDelete[i]);
+        if (rowIndex > rowsToDelete[i]) {
+          rowIndex--; // Adjust row index if a row above it was deleted
+        }
+      }
+    }
+    
+    const nowIso = now.toISOString();
     const skillsString = Array.isArray(payload.top_skills) ? payload.top_skills.join(", ") : "";
     
     const rowData = [
@@ -43,7 +66,7 @@ function doPost(e) {
       payload.work_model || "Remote",
       skillsString,
       payload.salary_expectation || 0,
-      now,
+      nowIso,
       JSON.stringify(payload)
     ];
     
