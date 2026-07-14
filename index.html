@@ -1,116 +1,147 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyDNA Global Network | Live Stats</title>
-    <!-- Google Fonts: Inter -->
+    <title>MyDNA Global Network</title>
+    <!-- Inter Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Feather Icons for lightweight SVGs -->
+    <script src="https://unpkg.com/feather-icons"></script>
 </head>
-<body>
-    <div class="glow-bg"></div>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="logo-group">
-                <div class="logo-icon pulse"></div>
-                <h1>MyDNA <span class="accent-text">Network</span></h1>
-            </div>
-            <div class="header-stats">
-                <div class="stat-badge">
-                    <span class="label">Total Nodes</span>
-                    <span class="value accent-text" id="totalNodesCount">0</span>
-                </div>
-                <div class="stat-badge">
-                    <span class="label">Last Sync</span>
-                    <span class="value" id="lastSyncTime">--:--</span>
-                </div>
-            </div>
-        </header>
+<body class="bg-gray-50 text-gray-900 dark:bg-zinc-950 dark:text-zinc-100 transition-colors duration-200 antialiased min-h-screen">
 
-        <main class="dashboard-grid">
-            <!-- Sidebar: Top Skills -->
-            <aside class="sidebar">
-                <div class="panel">
-                    <h2>Global Top Skills</h2>
-                    <p class="subtitle">Most requested & possessed</p>
-                    <div class="skills-ranking" id="skillsRankingContainer">
-                        <!-- Injected via JS -->
+    <!-- Navbar -->
+    <nav class="border-b border-gray-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 sticky top-0 z-10 transition-colors duration-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white shadow-sm">
+                        <i data-feather="box" class="w-5 h-5"></i>
                     </div>
+                    <span class="font-semibold text-lg tracking-tight">MyDNA Network</span>
                 </div>
-            </aside>
-
-            <!-- Main Content: Leaderboard -->
-            <section class="main-content">
-                <!-- Filters -->
-                <div class="filter-bar">
-                    <input type="text" id="searchInput" placeholder="Search by public key or skill..." class="search-input">
-                    <div class="filter-group">
-                        <select id="intentFilter" class="filter-select">
-                            <option value="all">All Intents</option>
-                            <option value="Ứng viên">Candidates</option>
-                            <option value="Nhà tuyển dụng">Employers</option>
-                            <option value="Freelancer">Freelancers</option>
-                        </select>
-                        <select id="workModelFilter" class="filter-select">
-                            <option value="all">All Models</option>
-                            <option value="Remote">Remote</option>
-                            <option value="Hybrid">Hybrid</option>
-                            <option value="On-site">On-site</option>
-                        </select>
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:flex flex-col items-end mr-4">
+                        <span class="text-xs text-gray-500 dark:text-zinc-400 font-medium uppercase tracking-wider">Total Nodes</span>
+                        <span class="font-bold text-brand-600 dark:text-brand-500" id="totalNodesCount">0</span>
                     </div>
-                </div>
-
-                <!-- List -->
-                <div class="nodes-list" id="nodesListContainer">
-                    <div class="loading-pulse">Loading Network Data...</div>
-                </div>
-            </section>
-        </main>
-    </div>
-
-    <!-- Profile Detail Modal -->
-    <div class="modal-overlay" id="profileModal">
-        <div class="modal-content">
-            <button class="close-btn" id="closeModalBtn">&times;</button>
-            
-            <div class="modal-header">
-                <div class="modal-avatar" id="modalAvatar"></div>
-                <div class="modal-title">
-                    <h2 id="modalPublicKey">PublicKey</h2>
-                    <span class="badge" id="modalIntent">Intent</span>
-                </div>
-            </div>
-
-            <div class="modal-body">
-                <div class="info-group">
-                    <span class="info-label">Seniority</span>
-                    <span class="info-value" id="modalSeniority">Unknown</span>
-                </div>
-                <div class="info-group">
-                    <span class="info-label">Work Model</span>
-                    <span class="info-value" id="modalWorkModel">Remote</span>
-                </div>
-                <div class="info-group">
-                    <span class="info-label">Salary Expectation</span>
-                    <span class="info-value accent-text" id="modalSalary">Negotiable</span>
-                </div>
-                
-                <div class="skills-section">
-                    <h3>Technical Stack</h3>
-                    <div class="tags-container" id="modalSkills"></div>
-                </div>
-
-                <div class="skills-section">
-                    <h3>Domain Knowledge</h3>
-                    <div class="tags-container" id="modalDomain"></div>
+                    <button id="themeToggle" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500 dark:text-zinc-400 transition-colors">
+                        <i data-feather="moon" id="themeIcon"></i>
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <div>
+                <h1 class="text-2xl font-bold">Global Leaderboard</h1>
+                <p class="text-sm text-gray-500 dark:text-zinc-400 mt-1">Live peer-to-peer network statistics. Last sync: <span id="lastSyncTime" class="font-medium">--:--</span></p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <div class="relative">
+                    <i data-feather="search" class="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="searchInput" placeholder="Search keys or skills..." 
+                           class="pl-9 pr-4 py-2 border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all w-64">
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters / Tabs -->
+        <div class="border-b border-gray-200 dark:border-zinc-800 mb-6">
+            <nav class="-mb-px flex space-x-8" id="intentTabs">
+                <button data-filter="all" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-brand-500 text-brand-600 dark:text-brand-500">
+                    All Nodes
+                </button>
+                <button data-filter="Ứng viên" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-300 hover:border-gray-300 dark:hover:border-zinc-700 transition-colors">
+                    Candidates
+                </button>
+                <button data-filter="Nhà tuyển dụng" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-300 hover:border-gray-300 dark:hover:border-zinc-700 transition-colors">
+                    Employers
+                </button>
+                <button data-filter="Freelancer" class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-zinc-300 hover:border-gray-300 dark:hover:border-zinc-700 transition-colors">
+                    Freelancers
+                </button>
+            </nav>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Table Section -->
+            <div class="lg:col-span-3">
+                <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-gray-200 dark:border-zinc-800 overflow-hidden transition-colors">
+                    
+                    <!-- Table Header -->
+                    <div class="grid grid-cols-12 gap-4 p-4 border-b border-gray-200 dark:border-zinc-800 bg-gray-50 dark:bg-zinc-900/50 text-xs font-semibold text-gray-500 dark:text-zinc-400 uppercase tracking-wider">
+                        <div class="col-span-1 text-center">Rank</div>
+                        <div class="col-span-4">Node Profile</div>
+                        <div class="col-span-4">Top Skills</div>
+                        <div class="col-span-3 text-right">Details</div>
+                    </div>
+
+                    <!-- List Container -->
+                    <div id="nodesListContainer" class="divide-y divide-gray-100 dark:divide-zinc-800">
+                        <div class="p-8 text-center text-gray-500 dark:text-zinc-400">
+                            Loading network data...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Top Skills Panel -->
+                <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-gray-200 dark:border-zinc-800 p-5 transition-colors">
+                    <h3 class="font-semibold text-sm mb-4">Trending Skills</h3>
+                    <div id="skillsRankingContainer" class="space-y-4">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-zinc-900 rounded-lg shadow-sm border border-gray-200 dark:border-zinc-800 p-5 transition-colors">
+                    <h3 class="font-semibold text-sm mb-2">Work Models</h3>
+                    <select id="workModelFilter" class="w-full border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none transition-colors">
+                        <option value="all">Any Model</option>
+                        <option value="Remote">Remote</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="On-site">On-site</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script src="app.js"></script>
 </body>
