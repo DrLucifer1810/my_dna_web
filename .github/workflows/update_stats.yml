@@ -1,0 +1,36 @@
+name: Fetch Global Network Stats
+
+on:
+  schedule:
+    # Run every hour
+    - cron: '0 * * * *'
+  workflow_dispatch:
+    # Allow manual triggering
+
+jobs:
+  fetch-and-commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Fetch Stats from Google Sheet (via GAS)
+        env:
+          # Thêm URL webhook Google Apps Script vào Github Secrets
+          GAS_WEBHOOK_URL: ${{ secrets.GAS_WEBHOOK_URL }}
+        run: node scripts/fetch_stats.js
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add public/global_stats.json
+          # Commit only if there are changes
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(data): auto-update global_stats.json" && git push)

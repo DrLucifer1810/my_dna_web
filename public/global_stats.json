@@ -1,0 +1,42 @@
+{
+  "updated_at": "2026-07-14T14:30:00Z",
+  "total_nodes": 1250,
+  "nodes": [
+    {
+      "public_key": "abc123xyz",
+      "intent": "Ứng viên",
+      "seniority": "Senior",
+      "work_model": "Remote",
+      "top_skills": ["Rust", "Tauri", "Web3"],
+      "salary_expectation": 5000,
+      "last_seen": "2026-07-14T14:00:00Z"
+    },
+    {
+      "public_key": "def456uvw",
+      "intent": "Nhà tuyển dụng",
+      "seniority": "Lead",
+      "work_model": "Hybrid",
+      "top_skills": ["React", "NodeJS", "AWS"],
+      "salary_expectation": 7000,
+      "last_seen": "2026-07-14T13:45:00Z"
+    },
+    {
+      "public_key": "ghi789rst",
+      "intent": "Freelancer",
+      "seniority": "Mid",
+      "work_model": "Remote",
+      "top_skills": ["Python", "AI", "LangChain"],
+      "salary_expectation": 3000,
+      "last_seen": "2026-07-14T12:00:00Z"
+    },
+    {
+      "public_key": "jkl012qwe",
+      "intent": "Ứng viên",
+      "seniority": "Junior",
+      "work_model": "Onsite",
+      "top_skills": ["Java", "Spring Boot"],
+      "salary_expectation": 1500,
+      "last_seen": "2026-07-14T14:20:00Z"
+    }
+  ]
+}

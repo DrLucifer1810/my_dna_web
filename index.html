@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyDNA Global Network | Live Stats</title>
+    <meta name="description" content="MyDNA Global Network Decentralized Leaderboard and Live Stats">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="glow-bg glow-bg-alt"></div>
+
+    <header class="glass-header">
+        <div class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h1>MyDNA <span>Network</span></h1>
+        </div>
+        <nav>
+            <a href="#" class="active">Explorer</a>
+            <a href="#">About Protocol</a>
+            <button class="join-btn">Launch Desktop App</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero-stats">
+            <div class="stat-card glass-card fade-in">
+                <h3>Total Network Nodes</h3>
+                <h2 id="stat-total-nodes">--</h2>
+                <div class="stat-sparkline success">+24 in last 24h</div>
+            </div>
+            <div class="stat-card glass-card fade-in" style="animation-delay: 0.1s">
+                <h3>Active Recruiters</h3>
+                <h2 id="stat-recruiters">--</h2>
+                <div class="stat-sparkline warning">High Demand</div>
+            </div>
+            <div class="stat-card glass-card fade-in" style="animation-delay: 0.2s">
+                <h3>Active Freelancers</h3>
+                <h2 id="stat-freelancers">--</h2>
+                <div class="stat-sparkline info">Growing fast</div>
+            </div>
+        </section>
+
+        <section class="filter-bar glass-card fade-in" style="animation-delay: 0.3s">
+            <div class="filter-group">
+                <label for="intent-filter">Intent</label>
+                <select id="intent-filter">
+                    <option value="All">All Intents</option>
+                    <option value="Ứng viên">Candidates</option>
+                    <option value="Nhà tuyển dụng">Recruiters</option>
+                    <option value="Freelancer">Freelancers</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="seniority-filter">Seniority</label>
+                <select id="seniority-filter">
+                    <option value="All">All Levels</option>
+                    <option value="Junior">Junior</option>
+                    <option value="Mid">Mid-Level</option>
+                    <option value="Senior">Senior</option>
+                    <option value="Lead">Lead</option>
+                </select>
+            </div>
+            <div class="filter-group search-group">
+                <input type="text" id="skill-search" placeholder="Search by Skills (e.g. Rust, React)">
+                <button id="search-btn">Filter</button>
+            </div>
+        </section>
+
+        <section class="leaderboard-section fade-in" style="animation-delay: 0.4s">
+            <div class="table-container glass-card">
+                <div class="table-header">
+                    <h2>Live Network Leaderboard <span class="pulse-indicator"></span></h2>
+                    <p id="last-updated">Last synced: Fetching...</p>
+                </div>
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Node ID (Public Key)</th>
+                            <th>Intent</th>
+                            <th>Seniority</th>
+                            <th>Top Skills</th>
+                            <th>Expected/Budget ($)</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Rows injected by JS -->
+                    </tbody>
+                </table>
+                <div id="loading-spinner" class="spinner-container">
+                    <div class="spinner"></div>
+                </div>
+                <div id="no-results" class="no-results hidden">
+                    <p>No nodes found matching your filters.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>MyDNA Global Statistics. Powered by decentralized P2P telemetry and GitHub Actions.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
